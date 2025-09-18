@@ -102,7 +102,9 @@ def "nu-complete git available upstream" [] {
 }
 
 def "nu-complete git remotes" [] {
-  ^git remote | lines | each { |line| $line | str trim }
+  ^git remote --verbose
+  | parse --regex '(?<value>\S+)\s+(?<description>\S+)'
+  | uniq-by value # Deduplicate where fetch and push remotes are the same
 }
 
 def "nu-complete git log" [] {
@@ -550,6 +552,34 @@ export extern "git branch" [
   --contains: string@"nu-complete git commits all"               # show only branches that contain the specified commit
   --no-contains                                                  # show only branches that don't contain specified commit
   --track(-t)                                                    # when creating a branch, set upstream
+]
+
+# List all variables set in config file, along with their values.
+export extern "git config list" [
+]
+
+# Emits the value of the specified key.
+export extern "git config get" [
+]
+
+# Set value for one or more config options.
+export extern "git config set" [
+]
+
+# Unset value for one or more config options.
+export extern "git config unset" [
+]
+
+# Rename the given section to a new name.
+export extern "git config rename-section" [
+]
+
+# Remove the given section from the configuration file.
+export extern "git config remove-section" [
+]
+
+# Opens an editor to modify the specified config file
+export extern "git config edit" [
 ]
 
 # List or change tracked repositories

@@ -39,7 +39,6 @@ def parse-fish [] {
 # make use of detect columns -n which with one like properly tokenizers arguments including across quotes
 def tokenize-complete-lines [] {
     lines
-    | where ($it | str length) > 0             # remove any empty lines
     | where $it starts-with 'complete'         # only complete command lines
     | each { 
       str replace -a "\\\\'" ""             # remove escaped quotes ' which break detect columns
@@ -104,7 +103,7 @@ def make-subcommands-completion [parents: list<string>] {
             " [\n"
                 (
                     $fishes
-                    | if ('n' in ($subcommand | columns)) {
+                    | if ('n' in ($subcommand.args | columns)) {
                         if ($subcommand.name != "") {
                             where ($it.n | str contains $subcommand.name)                     # for subcommand -> any where n matches `__fish_seen_subcommand_from arg` for the subcommand name
                         } else {
